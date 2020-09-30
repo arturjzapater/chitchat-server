@@ -15,3 +15,11 @@ io.on('connection', socket => {
 server.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`)
 })
+
+const handleExit = () => {
+  console.log('Shutting down server.')
+  process.exit()
+}
+
+process.on('SIGINT', handleExit)
+process.on('SIGTERM', handleExit)
