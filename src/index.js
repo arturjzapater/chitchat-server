@@ -10,6 +10,18 @@ const io = socket(server)
 
 io.on('connection', socket => {
   console.log(`${socket} connected`)
+
+  socket.on('new message', message => {
+    io.emit('new message', message)
+  })
+
+  socket.on('user typing', isTyping => {
+    io.emit('user typing', { socket, isTyping })
+  })
+
+  socket.on('disconnect', () => {
+    io.emit('user left', socket)
+  })
 })
 
 server.listen(PORT, () => {
