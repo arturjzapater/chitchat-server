@@ -21,14 +21,21 @@ io.on('connection', socket => {
     users.add(socket.id, name)
     socket.nickname = name
     console.log(socket.id, socket.nickname)
-    io.emit('new user', users.list())
+    io.emit('update userlist', users.list())
+    io.emit('new message', {
+      user: socket.nickname,
+      text: 'joined the conversation',
+      timestamp: Date.now(),
+      type: 'system'
+    })
   })
 
   socket.on('new message', message => {
     io.emit('new message', {
       user: socket.nickname,
       text: message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      type: 'user'
     })
   })
 
@@ -38,7 +45,15 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     console.log(`${socket.nickname} left (${socket.id})`)
+    users.remove(socket.id)
+    io.emit('update userlist', users.list())
     io.emit('user left', socket.id)
+    io.emit('new message', {
+      user: socket.nickname,
+      text: 'left the conversation',
+      timestamp: Date.now(),
+      type: 'system'
+    })
   })
 })
 
