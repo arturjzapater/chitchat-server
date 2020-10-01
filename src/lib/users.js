@@ -2,18 +2,21 @@ const uuid = require('uuid')
 
 let users = []
 
-const list = () => users
+const list = () => [...users]
 
 const nicknameExists = userNick =>
   users.some(({ nickname }) => nickname === userNick)
 
 const add = nickname => {
+  const id = uuid.v1()
   users = users.concat({
-    id: uuid.v1(),
+    id,
     nickname,
     isTyping: false,
     joined: Date.now()
   })
+
+  return id
 }
 
 const remove = userId => {

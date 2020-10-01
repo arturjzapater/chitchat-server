@@ -10,20 +10,26 @@ const server = http.createServer(app)
 const io = socket(server).of('/socket')
 
 io.on('connection', socket => {
-  console.log(`${socket} connected`)
+  console.log('New connection')
+
   socket.on('join', name => {
     if (users.nicknameExists(name)) {
       socket.emit('nickname taken')
       return
     }
 
-    console.log(`${name} joined`)
-    users.add(name)
-    io.emit('new user', users.list)
+    socket.id = users.add(name)
+    socket.nickname = name
+    console.log(socket.id, socket.nickname)
+    io.emit('new user', users.list())
   })
 
   socket.on('new message', message => {
-    io.emit('new message', message)
+    io.emit('new message', {
+      user: socket.nickname,
+      text: message,
+      timestamp: Date.now()
+    })
   })
 
   socket.on('user typing', isTyping => {
@@ -31,7 +37,8 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
-    io.emit('user left', socket)
+    console.log(`${socket.nickname} left (${socket.id})`)
+    io.emit('user left', socket.id)
   })
 })
 
