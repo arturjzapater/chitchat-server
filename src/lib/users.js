@@ -1,5 +1,3 @@
-const uuid = require('uuid')
-
 let users = []
 
 const list = () => [...users]
@@ -7,8 +5,7 @@ const list = () => [...users]
 const nicknameExists = userNick =>
   users.some(({ nickname }) => nickname === userNick)
 
-const add = nickname => {
-  const id = uuid.v1()
+const add = (id, nickname) => {
   users = users.concat({
     id,
     nickname,

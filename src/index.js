@@ -10,7 +10,7 @@ const server = http.createServer(app)
 const io = socket(server).of('/socket')
 
 io.on('connection', socket => {
-  console.log('New connection')
+  console.log('New connection', socket.id)
 
   socket.on('join', name => {
     if (users.nicknameExists(name)) {
@@ -18,7 +18,7 @@ io.on('connection', socket => {
       return
     }
 
-    socket.id = users.add(name)
+    users.add(socket.id, name)
     socket.nickname = name
     console.log(socket.id, socket.nickname)
     io.emit('new user', users.list())
