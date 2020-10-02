@@ -28,7 +28,8 @@ const newMessage = (io, socket) => message => {
 }
 
 const userTyping = (io, socket) => isTyping => {
-  io.emit('user typing', { socket, isTyping })
+  users.update(socket.id, { isTyping })
+  io.emit('update userlist', users.list())
 }
 
 const disconnect = (io, socket) => () => {

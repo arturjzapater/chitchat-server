@@ -16,6 +16,8 @@ const add = (id, nickname) => {
   return id
 }
 
+const find = userId => users.find(x => x.id === userId)
+
 const remove = userId => {
   users = users.filter(({ id }) => id !== userId)
 }
@@ -24,10 +26,17 @@ const reset = () => {
   users = []
 }
 
+const update = (userId, updatedInfo) => {
+  const user = find(userId)
+  remove(userId)
+  users = users.concat(Object.assign(user, updatedInfo))
+}
+
 module.exports = {
   add,
   list,
   nicknameExists,
   remove,
-  reset
+  reset,
+  update
 }

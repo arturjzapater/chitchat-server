@@ -59,4 +59,13 @@ describe('users module', () => {
       assert.strictEqual(users.nicknameExists('Julian'), false)
     })
   })
+
+  describe('update', () => {
+    it('updates a user', () => {
+      users.update(1, { isTyping: true })
+      const julia = users.list().find(x => x.nickname === 'Julia')
+
+      assert.strictEqual(julia.isTyping, true)
+    })
+  })
 })
