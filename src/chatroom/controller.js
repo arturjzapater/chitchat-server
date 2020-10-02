@@ -1,4 +1,11 @@
 const users = require('../users')
+const { timeout } = require('../../config/socket')
+
+const makeTimeout = socket => setTimeout(() => {
+  socket.emit('inactive')
+  socket.inactive = true
+  socket.disconnect(true)
+}, timeout)
 
 const join = (io, socket) => name => {
   if (users.nicknameExists(name)) {
@@ -8,17 +15,22 @@ const join = (io, socket) => name => {
 
   users.add(socket.id, name)
   socket.nickname = name
+  socket.timeout = makeTimeout(socket)
+
   console.log(socket.id, socket.nickname)
   io.emit('update userlist', users.list())
   io.emit('new message', {
     user: socket.nickname,
-    text: 'joined the conversation',
+    text: 'joined the conversation.',
     timestamp: Date.now(),
     type: 'system'
   })
 }
 
 const newMessage = (io, socket) => message => {
+  clearTimeout(socket.timeout)
+  socket.timeout = makeTimeout(socket)
+
   io.emit('new message', {
     user: socket.nickname,
     text: message,
@@ -35,11 +47,15 @@ const userTyping = (io, socket) => isTyping => {
 const disconnect = (io, socket) => () => {
   console.log(`${socket.nickname} left (${socket.id})`)
   users.remove(socket.id)
+
+  const text = socket.inactive
+    ? 'was disconnected due to inactivity.'
+    : 'left the conversation.'
+
   io.emit('update userlist', users.list())
-  io.emit('user left', socket.id)
   io.emit('new message', {
     user: socket.nickname,
-    text: 'left the conversation',
+    text,
     timestamp: Date.now(),
     type: 'system'
   })
