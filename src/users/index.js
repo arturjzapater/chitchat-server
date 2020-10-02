@@ -20,9 +20,14 @@ const remove = userId => {
   users = users.filter(({ id }) => id !== userId)
 }
 
+const reset = () => {
+  users = []
+}
+
 module.exports = {
   add,
   list,
   nicknameExists,
-  remove
+  remove,
+  reset
 }

@@ -2,7 +2,7 @@ const http = require('http')
 const socket = require('socket.io')
 
 const app = require('./app')
-const users = require('./lib/users')
+const users = require('./users')
 
 const { PORT = 5000 } = process.env
 
