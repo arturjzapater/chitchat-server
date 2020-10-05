@@ -11,7 +11,7 @@ const logger = NODE_ENV === 'development'
 
 const app = express()
 
-app.use(morgan(logger))
+if (NODE_ENV !== 'test') app.use(morgan(logger))
 app.use(express.static(path.resolve('..', '..', 'client', 'dist')))
 app.use('/api/users', usersApi({ Router }))
 

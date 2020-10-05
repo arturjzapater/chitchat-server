@@ -13,6 +13,7 @@ const getDate = () => {
 }
 
 module.exports = socket => ([event], next) => {
-  if (event !== 'user typing') console.log(`${socket.id} ${event} ${getDate()}`)
+  if (event === 'user typing') next()
+  console.log(`${socket.id} ${event} ${getDate()}`)
   next()
 }
