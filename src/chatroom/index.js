@@ -1,8 +1,10 @@
 const makeController = require('./controller')
+const logger = require('../middleware/logger')
 
 module.exports = io => socket => {
   const controller = makeController(io, socket)
-  console.log('New connection', socket.id)
+
+  socket.use(logger(socket))
 
   socket.on('join', controller.join)
   socket.on('new message', controller.newMessage)

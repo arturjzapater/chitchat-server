@@ -8,16 +8,10 @@ const makeTimeout = socket => setTimeout(() => {
 }, timeout)
 
 const join = (io, socket) => name => {
-  if (users.nicknameExists(name)) {
-    socket.emit('nickname taken')
-    return
-  }
-
   users.add(socket.id, name)
   socket.nickname = name
   socket.timeout = makeTimeout(socket)
 
-  console.log(socket.id, socket.nickname)
   io.emit('update userlist', users.list())
   io.emit('new message', {
     user: socket.nickname,
@@ -45,7 +39,6 @@ const userTyping = (io, socket) => isTyping => {
 }
 
 const disconnect = (io, socket) => () => {
-  console.log(`${socket.nickname} left (${socket.id})`)
   users.remove(socket.id)
 
   const text = socket.inactive
