@@ -1,3 +1,3 @@
 module.exports = {
-  url: 'https://chitchat-client.netlify.app/'
+  url: 'https://chitchat-client.netlify.app'
 }
