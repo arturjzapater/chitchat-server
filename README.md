@@ -36,7 +36,7 @@ To run unit tests, use:
 npm t
 ```
 
-To run end-to-end tests, make sure you have a copy of the [client](https://github.com/arturjzapater/chitchat-client) running on development mode and use:
+To run end-to-end tests, you will need a copy of the [client](https://github.com/arturjzapater/chitchat-client). Make sure that both client and server are running on development mode and use:
 
 ```bash
 npm run e2e
