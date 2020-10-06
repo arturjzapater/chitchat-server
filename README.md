@@ -2,6 +2,8 @@
 
 [Client repository](https://github.com/arturjzapater/chitchat-client)
 
+Chitchat is a simple chatting webapp. This server is written in [Node](https://nodejs.org/en/), using [Express](https://expressjs.com/) and [Socket.IO](https://socket.io/)
+
 ## Install and Run
 
 This project requires node >= 12.
