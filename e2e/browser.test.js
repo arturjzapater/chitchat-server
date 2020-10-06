@@ -64,7 +64,7 @@ describe('Login page', function () {
 })
 
 describe('Chatroom page', function () {
-  this.timeout(8000)
+  this.timeout(25000)
   let browser
   let page
 
@@ -110,6 +110,15 @@ describe('Chatroom page', function () {
         const sentMessageExists = list.includes('Test message.')
 
         assert.ok(sentMessageExists)
+      })
+  })
+
+  it('should allow participants to disconnect', () => {
+    return page.waitForSelector('#leave-btn')
+      .then(button => button.click())
+      .then(() => page.waitForNavigation())
+      .then(() => {
+        assert.match(page.url(), /http:\/\/localhost:3000\/?$/)
       })
   })
 })
