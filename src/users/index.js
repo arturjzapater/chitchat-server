@@ -28,6 +28,8 @@ const reset = () => {
 
 const update = (userId, updatedInfo) => {
   const user = find(userId)
+  if (!user) return
+
   remove(userId)
   users = users.concat(Object.assign(user, updatedInfo))
 }
