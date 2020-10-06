@@ -2,7 +2,7 @@ const assert = require('assert')
 const puppeteer = require('puppeteer')
 
 describe('Login page', function () {
-  this.timeout(8000)
+  this.timeout(25000)
   let browser
   let page
 
