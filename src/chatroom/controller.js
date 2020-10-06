@@ -1,5 +1,5 @@
 const users = require('../users')
-const { timeout } = require('../../config/socket')
+const { inactiveTimeout, typingTimeout } = require('../../config/socket')
 
 const makeInactiveTimeout = socket => {
   if (socket.inactiveTimeout) clearTimeout(socket.inactiveTimeout)
@@ -8,7 +8,7 @@ const makeInactiveTimeout = socket => {
     socket.emit('inactive')
     socket.inactive = true
     socket.disconnect(true)
-  }, timeout)
+  }, inactiveTimeout)
 }
 
 const makeTypingTimeout = (io, socket) => {
@@ -17,7 +17,7 @@ const makeTypingTimeout = (io, socket) => {
   return setTimeout(() => {
     users.update(socket.id, { isTyping: false })
     io.emit('update userlist', users.list())
-  }, 2000)
+  }, typingTimeout)
 }
 
 const join = (io, socket) => name => {

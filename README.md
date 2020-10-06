@@ -1,6 +1,6 @@
 # ChitChat
 
-[Live version](https://chitchat-client.netlify.app)
+[Live version](https://chitchat-client.netlify.app) _Note that it may take a while for it to start working because the client and/or the server might be dormant_
 
 [Client repository](https://github.com/arturjzapater/chitchat-client)
 
@@ -48,7 +48,12 @@ npm run e2e
 
 ## Configuration
 
-The socket's timeout for inactivity can be configured in [config/socket.js](config/socket.js)
+The [configuration folder](config) contains the following files:
+
+- [client.js](config/client.js): exports an object with the key `url`, which should contain the url where the client is deployed.
+- [socket.js](config/socket.js): exports an object with the following keys:
+    - `inactiveTimeout`: determines the period of inactivity after which a user will be disconnected.
+    - `typingTimeout`: determines the period after which a user will not be considered as typing anymore.
 
 ## Project Structure
 
