@@ -51,7 +51,7 @@ The socket's timeout for inactivity can be configured in [config/socket.js](conf
 The code of this project is in the [src](src) directory. Its main file is [index.js](src/index.js), which loads the routes and socket and starts the server. [app.js](src/app.js) defines the express application. It also has the following folders:
 
 - [chatroom](src/chatroom): contains the logic pertaining to the websockets. The socket's events are defined in [index.js](src/chatroom/index.js) and the controller functions in [controller.js](src/chatroom/controller.js).
-- [middleware](src/middleware): contains the server's middleware. The logging middleware for the socket server is defined in [logger.js](src/middleware/logger.js)
+- [middleware](src/middleware): contains the server's middleware. The logging middleware for the socket server is defined in [logger.js](src/middleware/logger.js).
 - [users](src/users): keeps track of the users connected to the chatroom. The module's main logic is in [index.js](src/users/index.js). [routes.js](src/users/routes.js) contains the definition of the route `/api/users/:nickname/exists` to allow checking if a nickname is already taken via the API.
 
 The unit tests are included in its relevant modules using the extension `.test.js`. The end-to-end tests are contained in the folder [e2e](e2e).
