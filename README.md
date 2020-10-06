@@ -42,6 +42,10 @@ To run end-to-end tests, you will need a copy of the [client](https://github.com
 npm run e2e
 ```
 
+## Configuration
+
+The socket's timeout for inactivity can be configured in [config/socket.js](config/socket.js)
+
 ## Project Structure
 
 The code of this project is in the [src](src) directory. Its main file is [index.js](src/index.js), which loads the routes and socket and starts the server. [app.js](src/app.js) defines the express application. It also has the following folders:
