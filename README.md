@@ -1,6 +1,6 @@
 # ChitChat
 
-[Live version](https://chitchat-client.netlify.app) _Note that it may take a while for it to start working because the client and/or the server might be dormant_
+[Live version](https://chitchat-client.netlify.app) _Note that it may take a while for it to start working because the app might be dormant_
 
 [Client repository](https://github.com/arturjzapater/chitchat-client)
 
