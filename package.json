@@ -4,7 +4,7 @@
   "description": "A chatroom web app that allows multiple users to simulateneously communicate via text",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "NODE_ENV=production node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "mocha --reporter list src/**/*.test.js",
     "e2e": "NODE_PATH=src NODE_ENV=test mocha --reporter list e2e/**/*.test.js"
