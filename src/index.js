@@ -7,7 +7,7 @@ const chatroom = require('./chatroom')
 const { PORT = 5000 } = process.env
 
 const server = http.createServer(app)
-const io = socketIO(server).of('/socket')
+const io = socketIO(server, { cookie: false }).of('/socket')
 
 io.on('connection', chatroom(io))
 
