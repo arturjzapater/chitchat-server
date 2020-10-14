@@ -19,10 +19,13 @@
   "author": "Artur J Zapater",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "jwt-simple": "^0.5.6",
     "morgan": "^1.10.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "eslint": "^7.10.0",

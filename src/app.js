@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser')
 const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
@@ -13,6 +14,7 @@ const logger = NODE_ENV === 'development'
 const app = express()
 
 if (NODE_ENV !== 'test') app.use(morgan(logger))
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   res.redirect(clientUrl)

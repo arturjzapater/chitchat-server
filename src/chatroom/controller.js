@@ -1,4 +1,5 @@
 const users = require('../users')
+const token = require('../utils/token')
 const { inactiveTimeout, typingTimeout } = require('../../config/socket')
 
 const makeInactiveTimeout = socket => {
@@ -15,15 +16,21 @@ const makeTypingTimeout = (io, socket) => {
   if (socket.typingTimeout) clearTimeout(socket.typingTimeout)
 
   return setTimeout(() => {
-    users.update(socket.id, { isTyping: false })
+    users.update(socket.userId, { isTyping: false })
     io.emit('update userlist', users.list())
   }, typingTimeout)
 }
 
-const join = (io, socket) => name => {
-  users.add(socket.id, name)
-  socket.nickname = name
+const join = (io, socket) => {
+  const { nickname, userId } = token.decode(socket.handshake.query.token)
+  users.update(userId, {
+    socketId: socket.id,
+    joined: Date.now()
+  })
+
   socket.inactiveTimeout = makeInactiveTimeout(socket)
+  socket.nickname = nickname
+  socket.userId = userId
 
   io.emit('update userlist', users.list())
   io.emit('new message', {
@@ -48,7 +55,7 @@ const newMessage = (io, socket) => message => {
 const userTyping = (io, socket) => () => {
   socket.typingTimeout = makeTypingTimeout(io, socket)
 
-  users.update(socket.id, { isTyping: true })
+  users.update(socket.userId, { isTyping: true })
   io.emit('update userlist', users.list())
 }
 
@@ -68,9 +75,17 @@ const disconnect = (io, socket) => () => {
   })
 }
 
-module.exports = (io, socket) => ({
-  join: join(io, socket),
-  newMessage: newMessage(io, socket),
-  userTyping: userTyping(io, socket),
-  disconnect: disconnect(io, socket)
-})
+module.exports = (io, socket) => {
+  if (!users.validate(socket.handshake.query.token)) {
+    socket.disconnect(true)
+    return null
+  }
+
+  join(io, socket)
+
+  return {
+    newMessage: newMessage(io, socket),
+    userTyping: userTyping(io, socket),
+    disconnect: disconnect(io, socket)
+  }
+}

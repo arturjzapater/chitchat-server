@@ -1,25 +1,36 @@
+const uuid = require('uuid')
+const token = require('../utils/token')
+
 let users = []
 
-const list = () => [...users]
+const list = () =>
+  users.map(({ nickname, userId, isTyping, joined }) => ({
+    nickname,
+    userId,
+    isTyping,
+    joined
+  }))
 
 const nicknameExists = userNick =>
   users.some(({ nickname }) => nickname === userNick)
 
-const add = (id, nickname) => {
-  users = users.concat({
-    id,
+const add = (socketId, nickname) => {
+  const user = {
+    socketId,
     nickname,
+    userId: uuid.v1(),
     isTyping: false,
-    joined: Date.now()
-  })
+    joined: undefined
+  }
+  users = users.concat(user)
 
-  return id
+  return user
 }
 
-const find = userId => users.find(x => x.id === userId)
+const find = id => users.find(({ userId }) => userId === id)
 
-const remove = userId => {
-  users = users.filter(({ id }) => id !== userId)
+const remove = socket => {
+  users = users.filter(({ socketId }) => socketId !== socket)
 }
 
 const reset = () => {
@@ -30,8 +41,17 @@ const update = (userId, updatedInfo) => {
   const user = find(userId)
   if (!user) return
 
-  remove(userId)
+  remove(user.socketId)
   users = users.concat(Object.assign(user, updatedInfo))
+}
+
+const validate = userToken => {
+  try {
+    const { nickname, userId } = token.decode(userToken)
+    return users.some(x => x.nickname === nickname && x.userId === userId)
+  } catch (e) {
+    return false
+  }
 }
 
 module.exports = {
@@ -40,5 +60,6 @@ module.exports = {
   nicknameExists,
   remove,
   reset,
-  update
+  update,
+  validate
 }

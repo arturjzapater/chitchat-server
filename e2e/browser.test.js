@@ -26,7 +26,7 @@ describe('Login page', function () {
 
   it('should allow a user to connect to the chat', () => {
     return page.waitForSelector('#login-form input')
-      .then(input => input.type('Test User'))
+      .then(input => input.type(`Test User-${Math.random().toFixed(2)}`))
       .then(() => page.keyboard.press('Enter'))
       .then(() => page.waitForNavigation())
       .then(() => {
@@ -46,10 +46,11 @@ describe('Login page', function () {
 
   it('should not allow a user to connect with an existing nickname', async () => {
     const page2 = await browser.newPage()
+    const nickname = `Test User-${Math.random().toFixed(3)}`
 
     const login = page => page.goto('http://localhost:3000')
       .then(() => page.waitForSelector('#login-form input'))
-      .then(input => input.type('Test User'))
+      .then(input => input.type(nickname))
       .then(() => page.keyboard.press('Enter'))
 
     return login(page)
@@ -77,7 +78,7 @@ describe('Chatroom page', function () {
     page = await browser.newPage()
     await page.goto('http://localhost:3000')
       .then(() => page.waitForSelector('#login-form input'))
-      .then(input => input.type('Test User'))
+      .then(input => input.type(`Test User-${Math.random().toFixed(4)}`))
       .then(() => page.keyboard.press('Enter'))
       .then(() => page.waitForNavigation())
   })
@@ -94,7 +95,7 @@ describe('Chatroom page', function () {
     return page.waitForSelector('#user-list li')
       .then(() => page.$$eval('#user-list li', li => li.map(x => x.innerText)))
       .then(list => {
-        const testUserExists = list.includes('Test User')
+        const testUserExists = list.some(x => /^Test User-/.test(x))
 
         assert.ok(testUserExists)
       })

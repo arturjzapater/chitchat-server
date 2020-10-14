@@ -15,15 +15,15 @@ describe('users module', () => {
       const nick = users.list().find(x => x.nickname === 'Nick')
 
       assert.strictEqual(users.list().length, 4)
-      assert.strictEqual(nick.id, 4)
       assert.strictEqual(nick.nickname, 'Nick')
       assert.strictEqual(nick.isTyping, false)
     })
 
-    it('returns the new user\'s id', () => {
-      const id = users.add(4, 'Test')
+    it('returns the new user', () => {
+      const { socketId, nickname } = users.add(4, 'Test')
 
-      assert.strictEqual(id, 4)
+      assert.strictEqual(socketId, 4)
+      assert.strictEqual(nickname, 'Test')
     })
   })
 
@@ -62,8 +62,9 @@ describe('users module', () => {
 
   describe('update', () => {
     it('updates a user', () => {
-      users.update(1, { isTyping: true })
-      const julia = users.list().find(x => x.nickname === 'Julia')
+      let julia = users.list().find(x => x.nickname === 'Julia')
+      users.update(julia.userId, { isTyping: true })
+      julia = users.list().find(x => x.nickname === 'Julia')
 
       assert.strictEqual(julia.isTyping, true)
     })
