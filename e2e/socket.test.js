@@ -12,7 +12,7 @@ const opts = {
   }
 }
 
-const request = callback => {
+const request = (nickname, callback) => {
   const req = http.request(opts, res => {
     let data = ''
     res.on('data', chunk => {
@@ -25,24 +25,29 @@ const request = callback => {
     })
   })
 
-  req.write(JSON.stringify({ nickname: 'Test' }))
+  req.write(JSON.stringify({ nickname }))
   req.end()
 }
 
 describe('Socket connection', () => {
   let socket
+  let nickname
 
-  beforeEach(() => new Promise(resolve => {
-    request(token => {
-      socket = io('http://localhost:5000/socket', {
-        reconnectionDelay: 0,
-        forceNew: true,
-        query: { token }
+  beforeEach(() => {
+    nickname = `test-${Math.random().toFixed(5)}`
+
+    return new Promise(resolve => {
+      request(nickname, token => {
+        socket = io('http://localhost:5000/socket', {
+          reconnectionDelay: 0,
+          forceNew: true,
+          query: { token }
+        })
+
+        resolve()
       })
-
-      resolve()
     })
-  }))
+  })
 
   afterEach(() => new Promise(resolve => {
     if (socket.connected) socket.close()
@@ -53,7 +58,7 @@ describe('Socket connection', () => {
     return new Promise(resolve => {
       socket.on('connect', () => {
         socket.on('new message', payload => {
-          assert.strictEqual(payload.user, 'Test')
+          assert.strictEqual(payload.user, nickname)
           assert.strictEqual(payload.text, 'joined the conversation.')
           assert.strictEqual(payload.type, 'system')
           assert.ok(typeof payload.timestamp === 'number')
@@ -67,7 +72,7 @@ describe('Socket connection', () => {
     return new Promise(resolve => {
       socket.on('connect', () => {
         socket.on('update userlist', payload => {
-          const user = payload.find(x => x.nickname === 'Test')
+          const user = payload.find(x => x.nickname === nickname)
 
           assert.ok(user)
           resolve()
@@ -79,23 +84,28 @@ describe('Socket connection', () => {
 
 describe('Socket events', () => {
   let socket
+  let nickname
 
-  beforeEach(() => new Promise(resolve => {
-    return request(token => {
-      socket = io('http://localhost:5000/socket', {
-        reconnectionDelay: 0,
-        forceNew: true,
-        query: { token }
-      })
+  beforeEach(() => {
+    return new Promise(resolve => {
+      nickname = `test-${Math.random().toFixed(5)}`
 
-      socket.on('connect', () => {
-        socket.on('new message', () => {
-          socket.off('new message')
-          resolve()
+      return request(nickname, token => {
+        socket = io('http://localhost:5000/socket', {
+          reconnectionDelay: 0,
+          forceNew: true,
+          query: { token }
+        })
+
+        socket.on('connect', () => {
+          socket.on('new message', () => {
+            socket.off('new message')
+            resolve()
+          })
         })
       })
     })
-  }))
+  })
 
   afterEach(() => new Promise(resolve => {
     if (socket.connected) socket.close()
@@ -105,7 +115,7 @@ describe('Socket events', () => {
   it('should respond to new message with a new message', () => {
     return new Promise(resolve => {
       socket.on('new message', payload => {
-        assert.strictEqual(payload.user, 'Test')
+        assert.strictEqual(payload.user, nickname)
         assert.strictEqual(payload.text, 'test message')
         assert.strictEqual(payload.type, 'user')
         resolve()
@@ -118,7 +128,7 @@ describe('Socket events', () => {
   it('should respond to user typing with updated user list', () => {
     return new Promise(resolve => {
       socket.on('update userlist', payload => {
-        const user = payload.find(x => x.nickname === 'Test')
+        const user = payload.find(x => x.nickname === nickname)
 
         assert.strictEqual(user.isTyping, true)
         resolve()
